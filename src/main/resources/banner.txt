@@ -1,0 +1,14 @@
+${AnsiColor.BRIGHT_BLUE}
+ __     __           _           _
+ \ \   / /          | |         (_)
+  \ \_/ /__  _   _  | |     __ _ _
+   \   / _ \| | | | | |    / _` | |
+    | | (_) | |_| | | |___| (_| | |
+    |_|\___/ \__,_| |______\__,_|_|
+
+${AnsiColor.BRIGHT_GREEN}
+可我不敌可爱 Boot Version: ${project.version}
+Spring Boot Version: ${spring-boot.version}${spring-boot.formatted-version}
+有来官网： https://www.aioveu.com/
+版权所属： 可我不敌可爱
+${AnsiColor.BRIGHT_BLUE}

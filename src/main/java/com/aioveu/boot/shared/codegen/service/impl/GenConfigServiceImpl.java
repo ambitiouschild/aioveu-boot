@@ -5,7 +5,7 @@ import cn.hutool.core.lang.Assert;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.aioveu.boot.YouLaiBootApplication;
+import com.aioveu.boot.AioveuBootApplication;
 import com.aioveu.boot.common.enums.EnvEnum;
 import com.aioveu.boot.common.exception.BusinessException;
 import com.aioveu.boot.config.property.CodegenProperties;
@@ -86,7 +86,7 @@ public class GenConfigServiceImpl extends ServiceImpl<GenConfigMapper, GenConfig
             //  根据表名生成实体类名 例如：sys_user -> SysUser
             genConfig.setEntityName(StrUtil.toCamelCase(StrUtil.upperFirst(StrUtil.toCamelCase(tableName))));
 
-            genConfig.setPackageName(YouLaiBootApplication.class.getPackageName());
+            genConfig.setPackageName(AioveuBootApplication.class.getPackageName());
             genConfig.setModuleName(codegenProperties.getDefaultConfig().getModuleName()); // 默认模块名
             genConfig.setAuthor(codegenProperties.getDefaultConfig().getAuthor());
         }

@@ -52,7 +52,7 @@
 <br>
 
 ```
-youlai-boot
+aioveu-boot
 ├── docker                              # Docker 目录
 │   ├── docker-compose.yml              # docker-compose 脚本
 ├── sql                                 # SQL脚本
@@ -100,7 +100,7 @@ youlai-boot
 │   │   │   └── vo                      # 视图对象
 │   │   ├── mapper                      # 数据库访问层
 │   │   └── service                     # 业务逻辑层
-│   └── YouLaiBootApplication           # 启动类
+│   └── AioveuBootApplication           # 启动类
 └── end                             
 ```
 </details>

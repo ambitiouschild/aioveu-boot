@@ -11,7 +11,7 @@ services:
     environment:
       - TZ=Asia/Shanghai
       - LANG= en_US.UTF-8
-      - MYSQL_ROOT_PASSWORD=775825 #设置 root 用户的密码
+      - MYSQL_ROOT_PASSWORD=775825 #设置 root 用户的密码   默认密码123456存储在mysql-data里，重建容器要把data清空
     volumes:
       - ./mysql/conf/my.cnf:/etc/my.cnf # 挂载 my.cnf 文件到容器的指定路径
       - ./mysql/data:/var/lib/mysql # 持久化 MySQL 数据

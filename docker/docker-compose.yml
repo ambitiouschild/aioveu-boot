@@ -69,7 +69,7 @@ services:
       - aioveu-boot
 
   aioveu-boot:
-    image: aioveu-boot:v0.0.8
+    image: aioveu-boot:v0.1.2
     container_name: aioveu-boot
     #    build:
     #      context: .

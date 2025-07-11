@@ -6,7 +6,7 @@
 
     <groupId>com.aioveu</groupId>
     <artifactId>aioveu-boot</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>0.1.2</version>
     <description>基于 Java 17 + SpringBoot 3 + Spring Security 构建的权限管理系统。</description>
 
     <parent>

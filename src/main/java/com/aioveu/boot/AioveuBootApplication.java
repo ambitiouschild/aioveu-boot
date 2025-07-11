@@ -4,11 +4,12 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
 
+
 /**
  * @Description: TODO 应用启动类
  * @Param:  null
  * @Return: null
- * @Author:
+ * @Author: 雒世松
  * @Email:
  * @Date:  2025-06-11 15:52:28
  * @LastEditors:

@@ -46,7 +46,7 @@ public class OpenApiConfig {
 
         return new OpenAPI()
                 .info(new Info()
-                        .title("管理系统 API 文档")
+                        .title("可我不敌可爱 管理系统 API 文档")
                         .description("本文档涵盖管理系统的所有API接口，包括登录认证、用户管理、角色管理、部门管理等功能模块，提供详细的接口说明和使用指南。")
                         .version(appVersion)
                         .license(new License()
@@ -54,9 +54,9 @@ public class OpenApiConfig {
                                 .url("http://www.apache.org/licenses/LICENSE-2.0")
                         )
                         .contact(new Contact()
-                                .name("youlai")
-                                .email("youlaitech@163.com")
-                                .url("https://www.youlai.tech")
+                                .name("雒世松")
+                                .email("ambitiouschild@qq.com")
+                                .url("https://aioveu.com")
                         )
                 )
                 // 配置全局鉴权参数-Authorize

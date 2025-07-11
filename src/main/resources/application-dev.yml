@@ -12,10 +12,10 @@ spring:
   data:
     redis:
       database: 0
-#      host: localhost         #redis
-      host: redis
-#      port: 6381     #6379       # 将宿主机的6381映射到容器的6379，但应用容器内应该使用6379端口连接，容器外为6381
-      port: 6379     #6379
+#      host: localhost         #本地redis
+      host: redis              #容器redis
+#      port: 6381     #本地redis 6381     # 将宿主机的6381映射到容器的6379，但应用容器内应该使用6379端口连接，容器外为6381
+      port: 6379     #容器redis 6379
       # 如果Redis 服务未设置密码，需要将password删掉或注释，而不是设置为空字符串
       password: 775825
       timeout: 10s
@@ -106,7 +106,8 @@ oss:
   # MinIO 对象存储服务
   minio:
     # MinIO 服务地址
-    endpoint: http://minio:9000   # http://localhost:9000
+#    endpoint: http://localhost:9000   # 本地MinIO 服务地址
+    endpoint: http://minio:9000   # 容器内MinIO 服务地址
     # 访问凭据
     access-key: minioadmin
     # 凭据密钥
@@ -178,9 +179,11 @@ xxl:
   job:
     # 定时任务开关
     enabled: false
+#    enabled: true
     admin:
       # 调度中心地址,多个逗号分隔
       addresses: http://127.0.0.1:8080/xxl-job-admin
+#      addresses: http://xxl-job-admin/xxl-job-admin
     accessToken: default_token
     # 执行器配置
     executor:

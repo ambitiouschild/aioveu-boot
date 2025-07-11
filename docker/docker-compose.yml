@@ -37,7 +37,8 @@ services:
       - aioveu-boot
 
   minio:
-    image: minio/minio:latest
+#    image: minio/minio:latest
+    image: minio/minio:RELEASE.2024-07-16T23-46-41Z   #选择可编辑桶的minio镜像版本
     container_name: aioveu-boot-minio
     restart: unless-stopped
     command: server /data --console-address ":9001"

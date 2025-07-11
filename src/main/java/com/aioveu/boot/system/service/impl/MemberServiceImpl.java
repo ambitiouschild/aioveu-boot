@@ -1,5 +1,7 @@
 package com.aioveu.boot.system.service.impl;
 
+import com.aioveu.boot.common.exception.BusinessException;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -13,6 +15,7 @@ import com.aioveu.boot.system.model.query.MemberQuery;
 import com.aioveu.boot.system.model.vo.MemberVO;
 import com.aioveu.boot.system.converter.MemberConverter;
 
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -77,11 +80,66 @@ public class MemberServiceImpl extends ServiceImpl<MemberMapper, Member> impleme
      * @param id   会员信息ID
      * @param formData 会员信息表单对象
      * @return 是否修改成功
+     * 根据代码，这里使用的是MyBatis-Plus的updateById方法。
+     * 解决方案：
+     *
+     * 确保传入的id被设置到entity对象中。
+     * 使用MyBatis-Plus的自动填充功能来更新updateTime字段。
      */
     @Override
     public boolean updateMember(Long id,MemberForm formData) {
-        Member entity = memberConverter.toEntity(formData);
-        return this.updateById(entity);
+        // 1. 验证ID是否存在
+        if (id == null || id <= 0) {
+            throw new IllegalArgumentException("会员ID不能为空");
+        }
+
+        // 2. 使用UpdateWrapper进行部分更新
+        UpdateWrapper<Member> updateWrapper = new UpdateWrapper<>();
+        updateWrapper.eq("id", id)
+                .eq("is_deleted", 0) // 确保未删除
+                .set("update_time", LocalDateTime.now());
+
+        // 3. 设置需要更新的字段
+        if (formData.getName() != null) {
+            updateWrapper.set("name", formData.getName());
+        }
+        if (formData.getMobile() != null) {
+            updateWrapper.set("mobile", formData.getMobile());
+        }
+        if (formData.getGender() != null) {
+            updateWrapper.set("gender", formData.getGender());
+        }
+        if (formData.getAge() != null) {
+            updateWrapper.set("age", formData.getAge());
+        }
+
+        // 4. 使用乐观锁（如果配置了）
+        Member existingMember = this.getById(id);
+        if (existingMember != null && existingMember.getVersion() != null) {
+            updateWrapper.eq("version", existingMember.getVersion());
+        }
+
+        // 5. 执行更新
+        boolean updated = this.update(updateWrapper);
+
+        // 6. 检查更新结果
+        if (!updated) {
+            // 处理更新失败的情况
+            if (this.getById(id) == null) {
+                throw new BusinessException("会员不存在，ID: " + id);
+            } else if (this.getById(id).getIsDeleted() == 1) {
+                throw new BusinessException("会员已被删除，无法更新");
+            } else {
+                throw new BusinessException("数据已被修改，请刷新后重试");
+            }
+        }
+
+        return true;
+
+//        Member entity = memberConverter.toEntity(formData);
+//        return this.updateById(entity);
+
+
     }
     
     /**

@@ -24,6 +24,8 @@ public class MemberForm implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
 
+
+
     /*
     * 根据日志，问题在于新增会员时，后端接口要求会员编号（id）不能为空，但新增会员时不应该需要id（因为id是系统生成的）。
     * 错误信息显示：MethodArgumentNotValidException: Validation failed for argument [0] ... default message [会员编号不能为空]

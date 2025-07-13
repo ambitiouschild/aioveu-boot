@@ -6,7 +6,7 @@ import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
 
 
 /**
- * @Description: TODO 应用启动类
+ * @Description: TODO 应用启动类   时光飞逝，莫等闲，白了少年头，空悲切，一万年太久，只争朝夕
  * @Param:  null
  * @Return: null
  * @Author: 雒世松

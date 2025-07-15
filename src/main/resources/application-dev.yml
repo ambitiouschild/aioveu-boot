@@ -115,9 +115,17 @@ oss:
     #MinIO客户端连接配置错误，检查你的MinIO配置，确保在应用程序中配置MinIO的endpoint时使用的是API端口（通常为9000），而不是Web控制台端口。
 #    endpoint: http://minio:9000   # 容器内MinIO 服务地址
     # 访问凭据
-    access-key: minioadmin
+#    access-key: minioadmin
     # 凭据密钥
-    secret-key: minioadmin
+#    secret-key: minioadmin
+
+    #解决 MinIO 默认凭证安全警告
+    #这个警告表明您的 MinIO 实例正在使用默认管理员凭证（minioadmin:minioadmin），这会造成严重的安全风险。
+    # 访问凭据
+    access-key: minioaioveu
+    # 凭据密钥
+    secret-key: mminioaioveu
+
     # 存储桶名称
     bucket-name: aioveu
     # (可选) 自定义域名：配置后，文件 URL 会使用该域名格式

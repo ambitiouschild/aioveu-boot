@@ -48,8 +48,12 @@ services:
     environment:
       - TZ=Asia/Shanghai
       - LANG=en_US.UTF-8
-      - MINIO_ROOT_USER=minioadmin
-      - MINIO_ROOT_PASSWORD=minioadmin
+#      - MINIO_ROOT_USER=minioadmin
+#      - MINIO_ROOT_PASSWORD=minioadmin
+      #解决 MinIO 默认凭证安全警告
+      #这个警告表明您的 MinIO 实例正在使用默认管理员凭证（minioadmin:minioadmin），这会造成严重的安全风险。
+      - MINIO_ROOT_USER=minioaioveu
+      - MINIO_ROOT_PASSWORD=minioaioveu
     volumes:
       - ./minio/data:/data
       - ./minio/config:/root/.minio

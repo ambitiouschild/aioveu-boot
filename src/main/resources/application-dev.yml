@@ -56,6 +56,10 @@ spring:
     # 邮件发送者
     from: ambitiouschild@qq.com
 
+    #GitGuardian是一款专注于源代码泄露防护的软件。它能够实时审计a源代码库，检测敏感数据的泄露，并提供加密功能以确保代码的安全性。
+    #GitGuardian的自动扫描功能能够识别代码库中的硬编码密钥、凭证和其他敏感信息，并提供详细的安全报告和修复建议。这对于防止敏感信息被恶意利用具有重要意义。
+    #此外，GitGuardian还支持与多种版本控制系统的无缝集成，使得开发者在提交代码时无需额外操作即可完成加密过程。
+
 mybatis-plus:
   mapper-locations: classpath*:/mapper/**/*.xml
   global-config:

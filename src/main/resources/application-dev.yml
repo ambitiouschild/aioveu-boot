@@ -153,6 +153,15 @@ sms:
       # 修改手机号短信验证码模板
       change-mobile: SMS_22xxx773
 
+#spring Boot默认配置了1MB(1048576 bytes)的文件上传限制，当上传文件超过这个大小时就会抛出异常。
+# 配置文件路径：src/main/resources/application.properties
+# 设置单个文件最大100MB
+servlet:
+  multipart:
+    max-file-size: 100MB
+    # 设置整个请求最大200MB（支持多文件上传）
+    max-request-size: 200MB
+
 # springdoc配置： https://springdoc.org/properties.html
 #访问 Swagger 接口文档： http://localhost:8989/swagger-ui.html
 springdoc:

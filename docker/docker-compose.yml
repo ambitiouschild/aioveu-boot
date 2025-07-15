@@ -61,7 +61,7 @@ services:
     container_name: aioveu-boot-xxl-job-admin
     restart: unless-stopped
     environment:
-      PARAMS: '--spring.datasource.url=jdbc:mysql://aioveu-boot-mysql:3306/xxl_job?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&serverTimezone=Asia/Shanghai --spring.datasource.username=root --spring.datasource.password=123456 --spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver'
+      PARAMS: '--spring.datasource.url=jdbc:mysql://mysql:3306/xxl_job?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&serverTimezone=Asia/Shanghai --spring.datasource.username=root --spring.datasource.password=775825 --spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver'
     volumes:
       - ./xxljob/logs:/data/applogs
     ports:

@@ -42,16 +42,17 @@ spring:
       spec: initialCapacity=50,maximumSize=1000,expireAfterWrite=600s
   # 邮件配置
   mail:
-    host: smtp.aioveu.tech
-    port: 587
-    username: ambitiouschild@qq.com
-    password: 775825
+    host: smtp.qq.com
+    port: 587  #465 # 或587
+    username: ambitiouschild@qq.com   #腾讯邮箱默认关闭 SMTP 服务，腾讯邮箱要求 SMTP 必须使用授权码（非登录密码）：pwjbkmmfmuspdgjh
+    password: pwjbkmmfmuspdgjh   # 替换为生成的授权码
     properties:
       mail:
         smtp:
           auth: true
+          ssl: true   # 465端口必开
           starttls:
-            enable: true
+            enable: true    # 587端口必开
     # 邮件发送者
     from: ambitiouschild@qq.com
 
@@ -148,6 +149,7 @@ sms:
       change-mobile: SMS_22xxx773
 
 # springdoc配置： https://springdoc.org/properties.html
+#访问 Swagger 接口文档： http://localhost:8989/swagger-ui.html
 springdoc:
   swagger-ui:
     path: /swagger-ui.html
@@ -166,6 +168,7 @@ springdoc:
   default-flat-param-object: true
 
 # knife4j 接口文档配置
+#访问 Knife4j 接口文档：http://localhost:8989/doc.html
 knife4j:
   # 是否开启 Knife4j 增强功能
   enable: true  # 设置为 true 表示开启增强功能
@@ -178,8 +181,8 @@ knife4j:
 xxl:
   job:
     # 定时任务开关
-    enabled: false
-#    enabled: true
+#    enabled: false
+    enabled: true
     admin:
       # 调度中心地址,多个逗号分隔
       addresses: http://127.0.0.1:8080/xxl-job-admin
@@ -193,6 +196,12 @@ xxl:
       port: 9999 # 执行器通讯端口
       logpath: /data/applogs/xxl-job/jobhandler # 任务运行日志文件存储磁盘路径
       logretentiondays: 30 # 日志保存天数，值大于3时生效
+    fail-monitor:
+      interval: 10000 # 从5秒改为10秒  修改告警检测间隔（避免触发限流）
+
+
+
+
 
 # 验证码配置
 captcha:

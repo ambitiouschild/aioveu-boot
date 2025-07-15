@@ -13,7 +13,7 @@ public class XxlJobSampleHandler {
 
     @XxlJob("demoJobHandler")
     public void demoJobHandler() {
-        log.info("XXL-JOB, Hello World.");
+        log.info("XXL-JOB, Hello World. 我是可我不敌可爱, 以中有足乐者，不止口体之奉不若人也");
     }
 
 }

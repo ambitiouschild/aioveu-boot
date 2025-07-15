@@ -111,8 +111,8 @@ oss:
   # MinIO 对象存储服务
   minio:
     # MinIO 服务地址
-#    endpoint: http://localhost:9000   # 本地MinIO 服务地址
-    endpoint: http://minio:9000   # 容器内MinIO 服务地址
+    endpoint: http://localhost:9003   # 本地MinIO 服务地址
+#    endpoint: http://minio:9000   # 容器内MinIO 服务地址
     # 访问凭据
     access-key: minioadmin
     # 凭据密钥

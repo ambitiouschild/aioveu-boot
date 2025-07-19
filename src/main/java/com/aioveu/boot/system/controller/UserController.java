@@ -69,7 +69,7 @@ public class UserController {
     @Operation(summary = "新增用户")
     @PostMapping
     @PreAuthorize("@ss.hasPerm('sys:user:add')")
-    @RepeatSubmit
+    @RepeatSubmit(expire = 3) // 3 秒内禁止重复提交
     @Log(value = "新增用户", module = LogModuleEnum.USER)
     public Result<?> saveUser(
             @RequestBody @Valid UserForm userForm

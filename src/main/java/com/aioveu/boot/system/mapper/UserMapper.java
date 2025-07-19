@@ -29,7 +29,12 @@ public interface UserMapper extends BaseMapper<User> {
      * @param queryParams 查询参数
      * @return 用户分页列表
      */
-    @DataPermission(deptAlias = "u", userAlias = "u")
+    @DataPermission(
+            deptAlias = "u",  // 部门字段的表别名，用于标记 SQL 中部门字段的来源表
+            deptIdColumnName = "dept_id", // 部门字段的列名，默认为 dept_id
+            userAlias = "u",// 用户字段的表别名，用于标记 SQL 中用户字段的来源表
+            userIdColumnName = "create_by" // 用户字段的列名，默认为 create_by
+    )
     Page<UserBO> getUserPage(Page<UserBO> page, UserPageQuery queryParams);
 
     /**

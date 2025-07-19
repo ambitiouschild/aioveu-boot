@@ -6,13 +6,13 @@
 -- ----------------------------
 -- 1. 创建数据库
 -- ----------------------------
-CREATE DATABASE IF NOT EXISTS aioveu_boot_salve CHARACTER SET utf8mb4 DEFAULT COLLATE utf8mb4_unicode_ci;
+CREATE DATABASE IF NOT EXISTS aioveu_boot_slave CHARACTER SET utf8mb4 DEFAULT COLLATE utf8mb4_unicode_ci;
 
 
 -- ----------------------------
 -- 2. 创建表 && 数据初始化
 -- ----------------------------
-use aioveu_boot_salve;
+use aioveu_boot_slave;
 
 SET NAMES utf8mb4;  # 设置字符集
 SET FOREIGN_KEY_CHECKS = 0; # 关闭外键检查，加快导入速度

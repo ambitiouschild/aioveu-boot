@@ -24,7 +24,7 @@ spring:
           password: 775825
         slave: # 从库
           type: com.alibaba.druid.pool.DruidDataSource
-          url: jdbc:mysql://localhost:3309/aioveu_boot_salve?zeroDateTimeBehavior=convertToNull&useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai&autoReconnect=true&allowMultiQueries=true
+          url: jdbc:mysql://localhost:3309/aioveu_boot_slave?zeroDateTimeBehavior=convertToNull&useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai&autoReconnect=true&allowMultiQueries=true
           username: root
           password: 775825
         aioveu: # aioveu库

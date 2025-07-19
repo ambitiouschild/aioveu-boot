@@ -63,6 +63,14 @@
     </properties>
 
     <dependencies>
+
+        <!--使用 dynamic-datasource 轻松实现多数据源支持-->
+        <dependency>
+            <groupId>com.baomidou</groupId>
+            <artifactId>dynamic-datasource-spring-boot3-starter</artifactId>
+            <version>4.3.1</version>
+        </dependency>
+
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>

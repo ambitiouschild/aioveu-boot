@@ -8,14 +8,40 @@ FROM openjdk:17-jdk-alpine
 # 维护者信息
 MAINTAINER aioveu <ambitiouschild@qq.com>
 
-RUN echo "https://mirrors.ustc.edu.cn/alpine/v3.7/main/" > /etc/apk/repositories && \
-    apk --no-cache add tzdata && \
-    cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && \
-    echo "Asia/Shanghai" > /etc/timezone   \
+#Dockerfile 中 RUN 指令使用 \ 续行符时，后续行不能为空行**（或仅含空格）。您的命令中可能在 && 和下一行之间存在多余空行。
+# 合并连续的 RUN 指令（减少镜像层 + 避免续行错误）
+#v3.7 是较旧的 Alpine 版本，建议更新到稳定版（如 v3.18），新源地址
+#如果中科大源不稳定，可替换为
+#中科大镜像源问题：USTC 源可能未同步 v3.18 版本，或者该版本已不维护
+#仓库配置不全：很多包（特别是字体包）需要在 community 仓库中查找
+#版本兼容性：使用太新或太旧的 Alpine 版本可能导致包不可用
 
-RUN apk add --update ttf-dejavu fontconfig
+# 阿里云源
+#RUN echo "https://mirrors.aliyun.com/alpine/v3.18/main/" > /etc/apk/repositories
+# 清华源
+#RUN echo "https://mirrors.tuna.tsinghua.edu.cn/alpine/v3.18/main/" > /etc/apk/repositories
+
+# 设置镜像源（包含main和community仓库）  # 使用稳定版本
+#建议使用阿里云源 + Alpine 3.16 的组合，这个版本有长期支持且包可用性高。修改后重新构建应该能解决问题。
+#RUN echo "https://mirrors.aliyun.com/alpine/v3.18/main/" > /etc/apk/repositories \
+# && echo "https://mirrors.aliyun.com/alpine/v3.18/community/" >> /etc/apk/repositories
+
+# 不修改源直接运行（官方源通常最可靠）
+
+# 安装依赖（合并到一个RUN指令）
+RUN apk update \
+ && apk --no-cache add tzdata ttf-dejavu fontconfig \
+ && cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime \
+ && echo "Asia/Shanghai" > /etc/timezone \
+ && rm -rf /var/cache/apk/*  # 清理缓存
+
+# 注意：
+# 1. 行尾用 `\` 续行，下一行开头用 `&&` 连接（无空行！）
+# 2. 合并了 ttf-dejavu 和 fontconfig 安装（原第二条 RUN 冗余）
+
+#RUN apk add --update ttf-dejavu fontconfig
 # 安装字体库 (必须)
-RUN apk add --no-cache fontconfig ttf-dejavu
+#RUN apk add --no-cache fontconfig ttf-dejavu
 
 
 #这个错误发生在生成验证码时，由于缺少字体管理类 sun.font.SunFontManager。 \
@@ -30,9 +56,10 @@ VOLUME /tmp
 ADD target/aioveu-boot.jar app.jar
 
 # 容器启动执行命令
+#增大 Docker 内存分配
 CMD java \
     -Xms128m \
-    -Xmx128m \
+    -Xmx1024m \
     -Djava.security.egd=file:/dev/./urandom \
     -jar /app.jar
 

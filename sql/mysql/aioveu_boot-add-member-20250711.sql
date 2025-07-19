@@ -1,4 +1,15 @@
 
+
+-- ----------------------------
+-- 1. 创建数据库
+-- ----------------------------
+CREATE DATABASE IF NOT EXISTS aioveu_boot CHARACTER SET utf8mb4 DEFAULT COLLATE utf8mb4_unicode_ci;
+
+
+
+-- 2. 创建表 && 数据初始化
+-- ----------------------------
+use aioveu_boot;
 -- 会员信息表
 -- ----------------------------
 DROP TABLE IF EXISTS `member`;

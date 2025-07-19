@@ -1,5 +1,6 @@
 package com.aioveu.boot.core.security.extension.sms;
 
+import org.glassfish.jaxb.core.v2.TODO;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 
@@ -7,11 +8,13 @@ import java.io.Serial;
 import java.util.Collection;
 
 /**
- * 短信验证码认证 Token
- *
- * @author Ray.Hao
- * @since 2.20.0
- */
+ * @Description: TODO 短信验证码认证 Token
+ * @Author: 雒世松
+ * @Date: 2025/7/19 13:39
+ * @param
+ * @return:
+ **/
+
 public class SmsAuthenticationToken extends AbstractAuthenticationToken {
     @Serial
     private static final long serialVersionUID = 621L;

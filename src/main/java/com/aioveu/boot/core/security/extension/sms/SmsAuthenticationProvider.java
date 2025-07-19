@@ -8,6 +8,7 @@ import com.aioveu.boot.core.security.model.SysUserDetails;
 import com.aioveu.boot.core.security.model.UserAuthCredentials;
 import com.aioveu.boot.system.service.UserService;
 import lombok.extern.slf4j.Slf4j;
+import org.glassfish.jaxb.core.v2.TODO;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.DisabledException;
@@ -17,11 +18,13 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 
 /**
- * 短信验证码认证 Provider
- *
- * @author Ray.Hao
- * @since 2.17.0
- */
+ * @Description: TODO  短信验证码认证 Provider
+ * @Author: 雒世松
+ * @Date: 2025/7/19 13:41
+ * @param
+ * @return:
+ **/
+
 @Slf4j
 public class SmsAuthenticationProvider implements AuthenticationProvider {
 

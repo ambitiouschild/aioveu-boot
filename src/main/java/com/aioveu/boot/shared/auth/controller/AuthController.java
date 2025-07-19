@@ -80,7 +80,7 @@ public class AuthController {
     @Operation(summary = "发送登录短信验证码")
     @PostMapping("/login/sms/code")
     public Result<Void> sendLoginVerifyCode(
-            @Parameter(description = "手机号", example = "18812345678") @RequestParam String mobile
+            @Parameter(description = "手机号", example = "13061656199") @RequestParam String mobile
     ) {
         authService.sendSmsLoginCode(mobile);
         return Result.success();
@@ -90,7 +90,7 @@ public class AuthController {
     @PostMapping("/login/sms")
     @Log(value = "短信验证码登录", module = LogModuleEnum.LOGIN)
     public Result<AuthenticationToken> loginBySms(
-            @Parameter(description = "手机号", example = "18812345678") @RequestParam String mobile,
+            @Parameter(description = "手机号", example = "13061656199") @RequestParam String mobile,
             @Parameter(description = "验证码", example = "1234") @RequestParam String code
     ) {
         AuthenticationToken loginResult = authService.loginBySms(mobile, code);

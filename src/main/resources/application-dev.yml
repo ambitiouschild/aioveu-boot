@@ -152,7 +152,7 @@ oss:
     # 访问凭据
     access-key: minioaioveu
     # 凭据密钥
-    secret-key: mminioaioveu
+    secret-key: minioaioveu
 
     # 存储桶名称
     bucket-name: aioveu

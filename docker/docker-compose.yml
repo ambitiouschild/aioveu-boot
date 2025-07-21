@@ -95,18 +95,18 @@ services:
     #      context: .
     #      dockerfile: Dockerfile
     volumes:
-      - ./mnt/nginx/nginx.conf:/etc/nginx/nginx.conf   #挂载主配置文件
-      - ./mnt/nginx/html:/usr/share/nginx/html         #挂载网站文件
-      - ./mnt/nginx/logs:/var/log/nginx/               #持久化存储日志
-      - ./mnt/nginx/ssl:/etc/nginx/ssl                 #挂载SSL证书
+#      - ./mnt/nginx/nginx.conf:/etc/nginx/nginx.conf   #挂载主配置文件
+#      - ./mnt/nginx/html:/usr/share/nginx/html         #挂载网站文件
+#      - ./mnt/nginx/logs:/var/log/nginx/               #持久化存储日志
+#      - ./mnt/nginx/ssl:/etc/nginx/ssl                 #挂载SSL证书
       #
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf   #挂载主配置文件
       - ./nginx/html:/usr/share/nginx/html         #挂载网站文件
       - ./nginx/logs:/var/log/nginx/               #持久化存储日志
       - ./nginx/ssl:/etc/nginx/ssl                 #挂载SSL证书
 
-      # nignx挂载自定义配置文件和网页文件，路径要匹配
-#      - /usr/share/nginx/html/vue:/usr/share/nginx/html  #挂载网站文件
+      #/usr/share/nginx/html nginx配置文件的html路径要与映射路径一致
+
     ports:
       - 80:80    #表示将nginx容器的80端口映射到宿主机的80端口。格式为宿主机端口:容器端口
     networks:

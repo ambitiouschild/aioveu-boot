@@ -108,7 +108,7 @@ services:
       # nignx挂载自定义配置文件和网页文件，路径要匹配
 #      - /usr/share/nginx/html/vue:/usr/share/nginx/html  #挂载网站文件
     ports:
-      - 8080:80    #表示将容器的80端口映射到宿主机的8080端口。格式为宿主机端口:容器端口
+      - 80:80    #表示将nginx容器的80端口映射到宿主机的80端口。格式为宿主机端口:容器端口
     networks:
       - aioveu-boot
     depends_on:

@@ -3,7 +3,17 @@
 #OpenJDK基础代码都是来自Oracle的JDK，但是为了开原协议的要求，把Oracle JDK中用到的一些非开源的组件、
 #代码去除了，替换成了开源的组件，主要的是在加密和图形的部分。可能会有一些不兼容
 #Docker镜像运行Spring Boot项目一般采用的是openjdk，这个jdk环境缺省是没有字体的，在运行很多项目时，会因缺省字体报错
-FROM openjdk:17-jdk-alpine
+
+
+#---------------------------------------------------------
+#确定基础镜像类型：
+#查看 Dockerfile 开头的 FROM 指令
+# 这是 Debian/Ubuntu 基础   使用方案一
+FROM openjdk:17-jdk-slim
+
+# 这是 Alpine 基础   使用方案三
+#FROM openjdk:17-jdk-alpine
+
 
 # 维护者信息
 MAINTAINER aioveu <ambitiouschild@qq.com>
@@ -25,15 +35,65 @@ MAINTAINER aioveu <ambitiouschild@qq.com>
 #建议使用阿里云源 + Alpine 3.16 的组合，这个版本有长期支持且包可用性高。修改后重新构建应该能解决问题。
 #RUN echo "https://mirrors.aliyun.com/alpine/v3.18/main/" > /etc/apk/repositories \
 # && echo "https://mirrors.aliyun.com/alpine/v3.18/community/" >> /etc/apk/repositories
-
+#----------------------------------------------------------
 # 不修改源直接运行（官方源通常最可靠）
-
+#方案三：如果您确实需要使用 Alpine 镜像
 # 安装依赖（合并到一个RUN指令）
-RUN apk update \
- && apk --no-cache add tzdata ttf-dejavu fontconfig \
- && cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime \
- && echo "Asia/Shanghai" > /etc/timezone \
- && rm -rf /var/cache/apk/*  # 清理缓存
+#RUN apk update \
+# && apk --no-cache add tzdata ttf-dejavu fontconfig \
+# && cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime \
+# && echo "Asia/Shanghai" > /etc/timezone \
+# && rm -rf /var/cache/apk/*  # 清理缓存
+#----------------------------------------------------------
+#关键是根据您 Dockerfile 中 FROM 指令指定的基础镜像类型，选择合适的包管理器命令
+#----------------------------------------------------------
+#方案一：如果您使用的是 Debian/Ubuntu 基础镜像
+# 替换为 apt-get 命令
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends tzdata fonts-dejavu fontconfig \
+    && ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime \
+    && echo "Asia/Shanghai" > /etc/timezone \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+#----------------------------------------------------------
+#方案二：如果您使用的是 CentOS/RHEL 基础镜像
+# 替换为 yum 命令
+#RUN yum install -y tzdata dejavu-sans-fonts fontconfig \
+#    && ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime \
+#    && echo "Asia/Shanghai" > /etc/timezone \
+#    && yum clean all
+
+#----------------------------------------------------------
+#方案三：如果您确实需要使用 Alpine 镜像
+# 使用 Alpine 基础镜像
+#FROM openjdk:17-alpine
+
+# 然后使用原来的 apk 命令
+#RUN apk update \
+#    && apk --no-cache add tzdata ttf-dejavu fontconfig \
+#    && cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime \
+#    && echo "Asia/Shanghai" > /etc/timezone \
+#    && rm -rf /var/cache/apk/*
+
+
+
+#----------------------------------------------------------
+#1.字体包名称差异
+#发行版	字体包名称
+#Debian/Ubuntu	         fonts-dejavu
+#Alpine	                 ttf-dejavu
+#CentOS/RHEL	         dejavu-sans-fonts
+#2.时区设置差异：
+#Alpine：使用 cp 复制时区文件
+#Debian/Ubuntu：使用 ln -sf 创建符号链接
+#CentOS：两种方式都支持
+#3.缓存清理位置
+#行版	缓存位置
+#Alpine	             /var/cache/apk/*
+#Debian/Ubuntu	     /var/lib/apt/lists/*
+#CentOS/RHEL	         /var/cache/yum/*
+#----------------------------------------------------------
 
 # 注意：
 # 1. 行尾用 `\` 续行，下一行开头用 `&&` 连接（无空行！）
@@ -57,10 +117,12 @@ ADD target/aioveu-boot.jar app.jar
 
 # 容器启动执行命令
 #增大 Docker 内存分配
+#这是一个 JDK 在容器环境中的监控问题，不影响业务逻辑
 CMD java \
     -Xms128m \
     -Xmx1024m \
     -Djava.security.egd=file:/dev/./urandom \
+    -Djdk.internal.platform.disable=true  \
     -jar /app.jar
 
 # 声明容器提供服务端口

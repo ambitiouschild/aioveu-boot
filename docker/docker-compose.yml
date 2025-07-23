@@ -75,6 +75,7 @@ services:
 
   aioveu-boot:
     image: aioveu-boot:v1.0.0
+    pull_policy: never  # 关键设置，即使本地已有镜像，Docker Compose 在启动时仍尝试连接远程仓库
     container_name: aioveu-boot
     #    build:
     #      context: .
@@ -95,10 +96,10 @@ services:
     #      context: .
     #      dockerfile: Dockerfile
     volumes:
-      - ./mnt/nginx/nginx.conf:/etc/nginx/nginx.conf   #挂载主配置文件
-      - ./mnt/nginx/html:/usr/share/nginx/html         #挂载网站文件
-      - ./mnt/nginx/logs:/var/log/nginx/               #持久化存储日志
-      - ./mnt/nginx/ssl:/etc/nginx/ssl                 #挂载SSL证书
+      - /mnt/nginx/conf/nginx.conf:/etc/nginx/nginx.conf   #挂载主配置文件
+      - /mnt/nginx/html:/usr/share/nginx/html         #挂载网站文件
+      - /mnt/nginx/logs:/var/log/nginx/               #持久化存储日志
+      - /mnt/nginx/ssl:/etc/nginx/ssl                 #挂载SSL证书
       #
 #      - ./nginx/conf/nginx.conf:/etc/nginx/nginx.conf   #挂载主配置文件
 #      - ./nginx/html:/usr/share/nginx/html         #挂载网站文件

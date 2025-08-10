@@ -120,6 +120,12 @@ public class MinioFileService implements FileService {
                 fileUrl = minioClient.getPresignedObjectUrl(getPresignedObjectUrlArgs);
                 fileUrl = fileUrl.substring(0, fileUrl.indexOf("?"));
 
+
+                // 关键修改：移除端口
+                if (fileUrl.contains(":")) {
+                    fileUrl = fileUrl.replaceFirst(":\\d+", ""); // 移除端口部分
+                }
+
                 // 关键修改：确保返回 HTTPS URL
                 if (fileUrl.startsWith("http://")) {
                     fileUrl = fileUrl.replace("http://", "https://");
@@ -139,6 +145,11 @@ public class MinioFileService implements FileService {
                     else if (fileUrl.startsWith("http://")) {
                         fileUrl = fileUrl.replace("http://", "https://");
                     }
+                }
+
+                // 移除端口
+                if (fileUrl.contains(":")) {
+                    fileUrl = fileUrl.replaceFirst(":\\d+", ""); // 移除端口部分
                 }
 
             }

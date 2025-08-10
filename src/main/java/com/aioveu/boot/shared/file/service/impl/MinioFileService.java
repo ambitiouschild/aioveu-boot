@@ -85,6 +85,7 @@ public class MinioFileService implements FileService {
         // 创建存储桶(存储桶不存在)，如果有搭建好的minio服务，建议放在init方法中
         createBucketIfAbsent(bucketName);
 
+        // 获取文件信息
         // 文件原生名称
         String originalFilename = file.getOriginalFilename();
         // 文件后缀
@@ -101,7 +102,7 @@ public class MinioFileService implements FileService {
                     .bucket(bucketName)
                     .object(dateFolder + "/"+ fileName)
                     .contentType(file.getContentType())
-                    .stream(inputStream, inputStream.available(), -1)
+                    .stream(inputStream, inputStream.available(), -1) // 使用实际文件大小
                     .build();
             minioClient.putObject(putObjectArgs);
 
@@ -118,9 +119,28 @@ public class MinioFileService implements FileService {
 
                 fileUrl = minioClient.getPresignedObjectUrl(getPresignedObjectUrlArgs);
                 fileUrl = fileUrl.substring(0, fileUrl.indexOf("?"));
+
+                // 关键修改：确保返回 HTTPS URL
+                if (fileUrl.startsWith("http://")) {
+                    fileUrl = fileUrl.replace("http://", "https://");
+                }
+
             } else {
                 // 配置自定义文件路径域名
                 fileUrl = customDomain + "/"+ bucketName + "/"+ dateFolder + "/"+ fileName;
+
+                // 关键修改：确保自定义域名使用 HTTPS
+                if (!fileUrl.startsWith("https://")) {
+                    // 如果自定义域名没有协议，添加 https://
+                    if (!fileUrl.startsWith("http")) {
+                        fileUrl = "https://" + fileUrl;
+                    }
+                    // 如果自定义域名使用 http://，替换为 https://
+                    else if (fileUrl.startsWith("http://")) {
+                        fileUrl = fileUrl.replace("http://", "https://");
+                    }
+                }
+
             }
 
             FileInfo fileInfo = new FileInfo();

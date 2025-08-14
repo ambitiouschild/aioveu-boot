@@ -11,11 +11,13 @@ import com.aioveu.boot.shared.file.model.FileInfo;
 import com.aioveu.boot.shared.file.service.FileService;
 import io.minio.*;
 import io.minio.http.Method;
+import io.minio.messages.Bucket;
 import jakarta.annotation.PostConstruct;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.poi.ss.formula.functions.T;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
@@ -23,6 +25,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.InputStream;
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Optional;
 
 /**
  * MinIO 文件上传服务类
@@ -62,14 +66,42 @@ public class MinioFileService implements FileService {
     private MinioClient minioClient;
 
     // 依赖注入完成之后执行初始化
+    //这个init 方法中的 MinIO 客户端初始化存在几个关键问题，会导致 "Access denied" 错误
     @PostConstruct
     public void init() {
-        minioClient = MinioClient.builder()
-                .endpoint(endpoint)
-                .credentials(accessKey, secretKey)
-                .build();
-        // 创建存储桶(存储桶不存在)
-        // createBucketIfAbsent(bucketName);
+        try{
+            // 1. 创建 MinIO 客户端
+            log.info("初始化MinIO客户端...");
+            minioClient = MinioClient.builder()
+                    .endpoint(endpoint)   // 确保 endpoint 格式正确 https://minio.aioveu.com
+                    .credentials(accessKey, secretKey)
+                    //我们使用的是Minio的Java客户端库，其中Region类在较新的版本中已经被引入（兼容旧版 SDK）
+                    // .region(Region.of("us-east-1")) // 必须添加区域  MinIO 需要明确的区域配置   us-east-1 是默认区域
+                    .build();
+
+//            // 2. 添加中国区域支持（手动设置）
+//            if (endpoint.contains("aliyuncs.com") || endpoint.contains("myqcloud.com")) {
+//                // 阿里云OSS或腾讯云COS需要区域
+//                minioClient.setRegion("cn-north-1");
+//            }
+
+//            log.info("MinIO客户端创建成功，开始检查存储桶: {}", bucketName);
+//            // 2. 验证连接
+//            minioClient.listBuckets(); // 测试连接是否有效
+//
+//            // 添加权限测试
+//            testMinioPermissions();
+//
+//            // 3. 创建存储桶并设置策略
+//            createBucketIfAbsent(bucketName);
+            log.info("MinIO 客户端初始化成功");
+            // 关键修改：完全跳过存储桶检查
+            log.warn("跳过存储桶检查，请确保存储桶 {} 已存在并配置正确", bucketName);
+
+        }catch (Exception e) {
+            log.error("MinIO 初始化失败", e);
+            throw new RuntimeException("MinIO 初始化失败: " + e.getMessage());
+        }
     }
 
 
@@ -83,7 +115,8 @@ public class MinioFileService implements FileService {
     public FileInfo uploadFile(MultipartFile file) {
 
         // 创建存储桶(存储桶不存在)，如果有搭建好的minio服务，建议放在init方法中
-        createBucketIfAbsent(bucketName);
+        // 关键修改：跳过存储桶检查
+        // createBucketIfAbsent(bucketName); // 注释掉这行
 
         // 获取文件信息
         // 文件原生名称
@@ -216,26 +249,74 @@ public class MinioFileService implements FileService {
                 + "\"Resource\":[\"arn:aws:s3:::" + bucketName + "/*\"]}]}";
     }
 
+
+    /**
+     * 验证 MinIO 凭证权限
+     *
+     * @param
+     */
+    private void testMinioPermissions() {
+        try {
+            log.info("测试MinIO权限...");
+
+            // 1. 测试列出存储桶权限
+            List<Bucket> buckets = minioClient.listBuckets();
+            log.info("可访问的存储桶数量: {}", buckets.size());
+
+            // 2. 测试创建临时存储桶权限
+            String testBucket = "test-bucket-" + System.currentTimeMillis();
+            minioClient.makeBucket(MakeBucketArgs.builder().bucket(testBucket).build());
+            log.info("临时存储桶创建成功: {}", testBucket);
+
+            // 3. 清理测试存储桶
+            minioClient.removeBucket(RemoveBucketArgs.builder().bucket(testBucket).build());
+            log.info("权限测试通过");
+        } catch (Exception e) {
+            log.error("MinIO权限测试失败", e);
+            throw new RuntimeException("凭证权限不足: " + e.getMessage());
+        }
+    }
+
     /**
      * 创建存储桶(存储桶不存在)
-     *
+     * 创建存储桶并设置公开读策略
      * @param bucketName 存储桶名称
      */
     @SneakyThrows
     private void createBucketIfAbsent(String bucketName) {
-        BucketExistsArgs bucketExistsArgs = BucketExistsArgs.builder().bucket(bucketName).build();
-        if (!minioClient.bucketExists(bucketExistsArgs)) {
-            MakeBucketArgs makeBucketArgs = MakeBucketArgs.builder().bucket(bucketName).build();
 
-            minioClient.makeBucket(makeBucketArgs);
-
-            // 设置存储桶访问权限为PUBLIC， 如果不配置，则新建的存储桶默认是PRIVATE，则存储桶文件会拒绝访问 Access Denied
-            SetBucketPolicyArgs setBucketPolicyArgs = SetBucketPolicyArgs
-                    .builder()
+        try {
+            // 检查存储桶是否存在
+            boolean exists = minioClient.bucketExists(BucketExistsArgs.builder()
                     .bucket(bucketName)
-                    .config(publicBucketPolicy(bucketName))
-                    .build();
-            minioClient.setBucketPolicy(setBucketPolicyArgs);
+                    .build());
+
+            if (!exists) {
+                // 创建存储桶
+                minioClient.makeBucket(MakeBucketArgs.builder()
+                        .bucket(bucketName)
+                        .build());
+
+                log.info("创建存储桶: {}", bucketName);
+
+                // 设置公开读策略
+                String policyJson = String.format(
+                        "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Effect\":\"Allow\",\"Principal\":\"*\",\"Action\":[\"s3:GetObject\"],\"Resource\":[\"arn:aws:s3:::%s/*\"]}]}",
+                        bucketName
+                );
+
+                minioClient.setBucketPolicy(SetBucketPolicyArgs.builder()
+                        .bucket(bucketName)
+                        .config(policyJson)
+                        .build());
+
+                log.info("设置存储桶 {} 的公开读策略", bucketName);
+                log.info("存储桶策略设置完成");
+            }
+        } catch (Exception e) {
+            log.error("存储桶操作失败", e);
+            throw new BusinessException(ResultCode.SYSTEM_ERROR, "存储桶初始化失败");
         }
+
     }
 }

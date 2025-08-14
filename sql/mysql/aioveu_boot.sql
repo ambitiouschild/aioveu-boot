@@ -381,9 +381,9 @@ CREATE TABLE `sys_user`  (
 -- ----------------------------
 -- Records of sys_user
 -- ----------------------------
-INSERT INTO `sys_user` VALUES (1, 'root', '可我不敌可爱', 0, '$2a$10$xVWsNOhHrCxh5UbpCE7/HuJ.PAOKcYAqRxD2CO2nVnJS.IAXkr5aq', NULL, 'https://foruda.gitee.com/images/1723603502796844527/03cdca2a_716974.gif', '13061656199', 1, 'ambitiouschild@qq.com', now(), NULL, now(), NULL, 0,NULL);
-INSERT INTO `sys_user` VALUES (2, 'admin', '系统管理员', 1, '$2a$10$xVWsNOhHrCxh5UbpCE7/HuJ.PAOKcYAqRxD2CO2nVnJS.IAXkr5aq', 1, 'https://foruda.gitee.com/images/1723603502796844527/03cdca2a_716974.gif', '13061656199', 1, 'ambitiouschild@qq.com', now(), NULL, now(), NULL, 0,NULL);
-INSERT INTO `sys_user` VALUES (3, 'test', '测试小用户', 1, '$2a$10$xVWsNOhHrCxh5UbpCE7/HuJ.PAOKcYAqRxD2CO2nVnJS.IAXkr5aq', 3, 'https://foruda.gitee.com/images/1723603502796844527/03cdca2a_716974.gif', '13061656199', 1, 'ambitiouschild@qq.com', now(), NULL, now(), NULL, 0,NULL);
+INSERT INTO `sys_user` VALUES (1, 'root', '可我不敌可爱', 0, '$2a$10$xVWsNOhHrCxh5UbpCE7/HuJ.PAOKcYAqRxD2CO2nVnJS.IAXkr5aq', NULL, 'https://minio.aioveu.com/aioveu/20250810/352485413d814dee87d9b7160dfe916e.png', '13061656199', 1, 'ambitiouschild@qq.com', now(), NULL, now(), NULL, 0,NULL);
+INSERT INTO `sys_user` VALUES (2, 'admin', '系统管理员', 1, '$2a$10$xVWsNOhHrCxh5UbpCE7/HuJ.PAOKcYAqRxD2CO2nVnJS.IAXkr5aq', 1, 'https://minio.aioveu.com/aioveu/20250810/352485413d814dee87d9b7160dfe916e.png', '13061656199', 1, 'ambitiouschild@qq.com', now(), NULL, now(), NULL, 0,NULL);
+INSERT INTO `sys_user` VALUES (3, 'test', '测试小用户', 1, '$2a$10$xVWsNOhHrCxh5UbpCE7/HuJ.PAOKcYAqRxD2CO2nVnJS.IAXkr5aq', 3, 'https://minio.aioveu.com/aioveu/20250810/352485413d814dee87d9b7160dfe916e.png', '13061656199', 1, 'ambitiouschild@qq.com', now(), NULL, now(), NULL, 0,NULL);
 
 -- ----------------------------
 -- Table structure for sys_user_role

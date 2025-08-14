@@ -34,13 +34,17 @@ spring:
           driver-class-name: com.mysql.cj.jdbc.Driver
 #          url: jdbc:mysql://localhost:3309/aioveu_boot?zeroDateTimeBehavior=convertToNull&useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai&autoReconnect=true&allowMultiQueries=true
           url: jdbc:mysql://mysql:3306/aioveu_boot?zeroDateTimeBehavior=convertToNull&useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai&autoReconnect=true&allowMultiQueries=true
+#          url: jdbc:mysql://aioveu.com:3309/aioveu_boot?zeroDateTimeBehavior=convertToNull&useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai&autoReconnect=true&allowMultiQueries=true
+#          url: jdbc:mysql://my.aioveu.com:3309/aioveu_boot?zeroDateTimeBehavior=convertToNull&useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai&autoReconnect=true&allowMultiQueries=true
           username: root
           password: 775825
 
   data:
     redis:
       database: 0
-#      host: localhost         #本地redis
+#      host: localhost         #本地redis 192.168.0.108
+#      host: aioveu.com         #云服务器redis
+#      host: my.aioveu.com         #本地redis 192.168.0.108
       host: redis              #容器redis
 #      port: 6381     #本地redis 6381     # 将宿主机的6381映射到容器的6379，但应用容器内应该使用6379端口连接，容器外为6381
       port: 6379     #容器redis 6379
@@ -142,11 +146,43 @@ oss:
 #    endpoint: http://localhost:9002   # 本地MinIO 服务地址  MinIO的API端口默认是9000，而Web控制台端口默认是9001
     #MinIO客户端连接配置错误，检查你的MinIO配置，确保在应用程序中配置MinIO的endpoint时使用的是API端口（通常为9000），而不是Web控制台端口。
 #    endpoint: http://minio:9000   # 容器内MinIO 服务地址 http://192.168.25.21:9000    # 关键配置：替换为公网IP或域名
-    endpoint: http://192.168.25.21:9002   # 关键配置：替换为公网IP或域名映射  应用程序配置最佳实践，在应用中配置MinIO公共地址，这样数据库会保存ip
+#      控制台访问端口 http://139.224.209.98:9003  http://minio.aioveu.com:9003 控制台路径/ui后面必须加斜杠访问（如https://minio.aioveu.com/ui/）
+#    endpoint: http://192.168.25.22:9002   # 关键配置：替换为公网IP或域名映射  应用程序配置最佳实践，在应用中配置MinIO公共地址，这样数据库会保存ip
+#    endpoint: http://139.224.209.98:9000   # 关键配置：替换为公网IP或域名映射  应用程序配置最佳实践，在应用中配置MinIO公共地址，这样数据库会保存ip
+
+    #MinIO服务本身使用HTTP协议（非加密），但外部用户需要通过HTTPS访问。这通常通过反向代理（如Nginx）实现SSL终止（SSL Termination）。
+#    endpoint: http://minio.aioveu.com
+    endpoint: http://minio:9000
+    #    endpoint: http://my.aioveu.com:9000    # 关键配置：替换为公网IP或域名映射  应用程序配置最佳实践，在应用中配置MinIO公共地址，这样数据库会保存ip
+#    endpoint: https://minio.aioveu.com
+    #    endpoint: http://aioveu.com:9002
+    #注意在保存图片时，应用程序应该使用外部域名（通过代理）来构造访问地址，而不是直接使用MinIO返回的地址。
+    #MinIO返回的地址应该是代理后的地址，这需要MinIO知道外部域名（如上一步设置）
+    #通过代理访问MinIO时，存储对象的路径变成了MinIO容器内部路径格式，而不是期望的域名格式
     # 访问凭据
 #    access-key: minioadmin
     # 凭据密钥
 #    secret-key: minioadmin
+
+
+#    1.
+#    前端上传流程：
+#    前端 -> Nginx（宿主机） -> 后端容器 -> MinIO容器
+#
+#    2.
+#    前端访问图片流程：
+#    前端 -> Nginx（宿主机）代理MinIO -> MinIO容器
+
+#    1.内部通信：
+#    • 后端通过容器网络直接访问 MinIO（http://minio:9000）
+#    • 高速、安全、不经过公网
+#    2.外部访问：
+#    • 用户通过域名访问资源（https://minio.aioveu.com）
+#    • Nginx 代理请求到 MinIO 容器
+#    3.数据库存储：
+#    • 保存完整的公共 URL
+#    • 前端直接使用这些 URL 显示图片
+
 
     #解决 MinIO 默认凭证安全警告
     #这个警告表明您的 MinIO 实例正在使用默认管理员凭证（minioadmin:minioadmin），这会造成严重的安全风险。
@@ -157,8 +193,10 @@ oss:
 
     # 存储桶名称
     bucket-name: aioveu
+#    region:  cn-north-1 # 中国区域 北京  #us-east-1 # 添加区域配置   //MinIO 本身不强制要求区域  区域设置主要用于兼容 AWS S3 API 中国用户建议使用 cn-north-1
+    # Region 类在 minio SDK 8.0+ 引入  旧版 SDK 可以忽略区域设置
     # (可选) 自定义域名：配置后，文件 URL 会使用该域名格式
-    custom-domain:
+    custom-domain: https://minio.aioveu.com
   # 阿里云OSS对象存储服务
   aliyun:
     # 服务Endpoint
@@ -204,6 +242,7 @@ servlet:
 # springdoc配置： https://springdoc.org/properties.html
 #访问 Swagger 接口文档： http://localhost:8989/swagger-ui.html
 #访问 Swagger 接口文档： http://192.168.25.21:8989/swagger-ui.html
+#访问 Swagger 接口文档： http://aioveu.com:8989/swagger-ui.html
 springdoc:
   swagger-ui:
     path: /swagger-ui.html
@@ -224,6 +263,8 @@ springdoc:
 # knife4j 接口文档配置
 #访问 Knife4j 接口文档：http://localhost:8989/doc.html
 #访问 Knife4j 接口文档：http://192.168.25.21:8989/doc.html
+#访问 Knife4j 接口文档：https://139.224.209.98:8989/doc.html
+#访问 Knife4j 接口文档：http://love.aioveu.com:8989/doc.html
 knife4j:
   # 是否开启 Knife4j 增强功能
   enable: true  # 设置为 true 表示开启增强功能
@@ -236,11 +277,12 @@ knife4j:
 xxl:
   job:
     # 定时任务开关
-#    enabled: false
-    enabled: true
+    enabled: false
+#    enabled: true
     admin:
-      # 调度中心地址,多个逗号分隔
-#      addresses: http://127.0.0.1:8080/xxl-job-admin
+      # 调度中心地址,多个逗号分隔    http://139.224.209.98:8080/xxl-job-admin
+#      addresses: http://127.0.0.1:8080/xxl-job-admin   # http://192.168.25.22:8080/xxl-job-admin
+#       addresses: http://my.aioveu.com:8080/xxl-job-admin
        addresses: http://xxl-job-admin:8080/xxl-job-admin
     accessToken: default_token
     # 执行器配置
@@ -292,3 +334,10 @@ wx:
   miniapp:
     app-id: xxxxxx
     app-secret: xxxxxx
+
+#增加日志级别配置
+logging:
+  level:
+    root: INFO
+    com.aioveu: DEBUG
+    io.minio: DEBUG

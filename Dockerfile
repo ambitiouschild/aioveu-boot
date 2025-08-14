@@ -58,6 +58,8 @@ RUN apt-get update \
 
 #----------------------------------------------------------
 #方案二：如果您使用的是 CentOS/RHEL 基础镜像
+
+#FROM centos:7
 # 替换为 yum 命令
 #RUN yum install -y tzdata dejavu-sans-fonts fontconfig \
 #    && ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime \
@@ -65,7 +67,7 @@ RUN apt-get update \
 #    && yum clean all
 
 #----------------------------------------------------------
-#方案三：如果您确实需要使用 Alpine 镜像
+#方案三：如果您确实需要使用 Alpine 镜像  使用的基础镜像可能是基于Alpine Linux（使用apk）或Debian（使用apt），而不是基于RHEL/CentOS（使用yum）
 # 使用 Alpine 基础镜像
 #FROM openjdk:17-alpine
 
